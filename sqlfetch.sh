@@ -67,6 +67,9 @@ read -p 'If you want to use ssh press 1 , for direct mysql connection press 2: '
       mysql -u$sqluser -p$sqlpass $schema < $schema.sql
       echo "----------------"
       echo "Unless you saw mysql error the import of $schema.sql was successful"
+      echo "----------------"
+      printf "Now deleting the dump file.\n"
+      rm $schema.sql
         printf "\033[0;32mFinished!!!\033[0m\n"
     else
       echo "Not a valid character. Now exiting"
