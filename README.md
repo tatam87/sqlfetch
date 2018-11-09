@@ -7,4 +7,4 @@ Example of the ssh (1) way:
 <p align="center"><img src="imgs/20180823-132322.png"/></p>
 Example of the direct (2) way:
 <p align="center"><img src="imgs/20180823-132619.png"/></p>
-Attention !! please do not leave the ports blank.
+
