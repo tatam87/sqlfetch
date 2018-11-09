@@ -9,7 +9,7 @@ read -p 'If you want to use ssh press 1 , for direct mysql connection press 2: '
     echo "----------------"
     read -p 'remote HOST_USER: ' remoteuser
     echo "----------------"
-    read -p 'SSH Port (if you dont know type 22): ' sshport
+    read -p 'SSH Port: ' sshport
     echo "----------------"
     read -p 'Remote DATABASE_HOST: ' remotehost
     echo "----------------"
@@ -24,17 +24,17 @@ read -p 'If you want to use ssh press 1 , for direct mysql connection press 2: '
     read -p 'Local SQL_PASSWORD: ' sqlpass
     echo "----------------"
     printf "\nSSH passphrase or password for SSH:\n"
-    ssh -tt  $remoteuser@$remotehost -p$sshport "mysqldump -u$remotesqluser -p$remotesqlpass --databases -B $schema > ~/$schema.sql"
+    ssh -tt  $remoteuser@$remotehost -p"${sshport:=22}" "mysqldump -u$remotesqluser -p$remotesqlpass --databases -B $schema > ~/$schema.sql"
     echo "----------------"
     printf "\n Dump was created! To fetch provide again the ssh passphrase or password\n"
-    scp -P$sshport $remoteuser@$remotehost:~/$schema.sql $PWD
+    scp -P"${sshport:=22}" $remoteuser@$remotehost:~/$schema.sql $PWD
     echo "----------------"
     echo the $schema.sql was downloaded!
     mysql -u$sqluser -p$sqlpass < $schema.sql
     echo "----------------"
     echo "unless you saw mysql error the import of $schema was successful"
     printf "\nFor deleting remote dump file ~/$schema.sql provide again the ssh passphrase or password\n"
-    ssh -tt $remoteuser@$remotehost -p$sshport "rm ~/$schema.sql"
+    ssh -tt $remoteuser@$remotehost -p"${sshport:=22}" "rm ~/$schema.sql"
     echo "Remote dump file deleted"
     echo "----------------"
     printf "\nNow deleting local dump file \n"
@@ -58,13 +58,13 @@ read -p 'If you want to use ssh press 1 , for direct mysql connection press 2: '
       echo "----------------"
       read -p 'Local SQL_PASSWORD: ' sqlpass
       echo "----------------"
-      read -p 'mysql port (if you dont know type 3306): ' sqlport
+      read -p 'mysql port: ' sqlport
       echo "----------------"
       printf "Now lets go and fetch the databases.\n"
-      mysqldump -u$remotesqluser -h$remotehost -p$remotesqlpass  --databases -B $schema > $schema.sql
+      mysqldump -u$remotesqluser -h$remotehost --port$"{sshport:=3306}" -p$remotesqlpass  --databases -B $schema > $PWD/$schema.sql
       echo "----------------"
       printf "\033[0;32mFinished dump $schema.sql on $PWD !!!\033[0m\n"
-      mysql -u$sqluser -p$sqlpass $schema < $schema.sql
+      mysql -u$sqluser -p$sqlpass $schema < $PWD/$schema.sql
       echo "----------------"
       echo "Unless you saw mysql error the import of $schema.sql was successful"
       echo "----------------"
